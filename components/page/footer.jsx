@@ -11,7 +11,7 @@ export default function Footer() {
             <div className="flex gap-3 items-center justify-center mt-3">
                 <Link target="_blank" className="text-sm opacity-80 font-light underline hover:opacity-100" href="https://whatsapp.com/channel/0029Vaf3fl4DZ4LTzJhwg00g">Source Code</Link>
                 <Link target="_blank" className="text-sm opacity-80 font-light underline hover:opacity-100" href="https://dominatorstufs.github.io/Portfolio/">Portfolio</Link>
-                <Link target="_blank" className="text-sm opacity-80 font-light underline hover:opacity-100" href="https://www.instagram.com/king.onscreen">Instagram</Link>
+                <Link target="_blank" className="text-sm opacity-80 font-light underline hover:opacity-100" href="https://www.instagram.com/dominator.onscreen">Instagram</Link>
             </div>
         </footer>
     )
