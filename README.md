@@ -2,8 +2,8 @@
 
 MusicHub is a web music app built using Next.js 14, App Router, and an unofficial music API. The user interface is styled with Tailwind CSS.
 
-[![Follow me](https://img.shields.io/github/followers/r2hu1?style=social)](https://github.com/r2hu1)
-[![Star this Repo](https://img.shields.io/github/stars/r2hu1/musichub?style=social)](https://github.com/r2hu1/musichub)
+[![Follow me](https://img.shields.io/github/followers/DominatorStufs?style=social)](https://github.com/DominatorStufs)
+[![Star this Repo](https://img.shields.io/github/stars/DominatorStufs/DominatorMusicDesktop?style=social)](https://github.com/DominatorStufs/DominatorMusicDesktop)
 
 <br/>
 
@@ -45,7 +45,7 @@ Mobile Player
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/r2hu1/musichub.git
+git clone https://github.com/DominatorStufs/DominatorMusicDesktop.git
 cd musichub
 ```
 
