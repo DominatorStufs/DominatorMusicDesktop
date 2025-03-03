@@ -37,28 +37,17 @@ export default function Page() {
   return (
     <main className="px-6 py-5 md:px-20 lg:px-32">
       <div>
-        <h1 className="text-base">Songs</h1>
-        <p className="text-xs text-muted-foreground">Top new released songs.</p>
+        <div className="grid">
+          <h1 className="text-base">Songs</h1>
+          <p className="text-xs text-muted-foreground">Top new released songs.</p>
+        </div>
         <ScrollArea className="rounded-md mt-4">
           <div className="flex gap-4">
-            {latest.length ? latest.slice().reverse().map((song) => (
+            {latest.length ? latest.slice().map((song) => (
               <SongCard key={song.id} image={song.image[2].url} album={song.album} title={song.name} artist={song.artists.primary[0].name} id={song.id} />
-            )) : (
-              <>
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-              </>
-            )}
+            )) : Array.from({ length: 10 }).map((_, i) => <SongCard key={i} />)}
           </div>
-          <ScrollBar orientation="horizontal" className="hidden" />
+          <ScrollBar orientation="horizontal" className="hidden sm:flex" />
         </ScrollArea>
       </div>
 
@@ -67,24 +56,11 @@ export default function Page() {
         <p className="text-xs text-muted-foreground">Top new released albums.</p>
         <ScrollArea className="rounded-md mt-6">
           <div className="flex gap-4">
-            {albums.length ? albums.slice().reverse().map((song) => (
+            {albums.length ? albums.slice().map((song) => (
               <AlbumCard key={song.id} lang={song.language} image={song.image[2].url} album={song.album} title={song.name} artist={song.artists.primary[0].name} id={`album/${song.id}`} />
-            )) : (
-              <>
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-              </>
-            )}
+            )) : Array.from({ length: 10 }).map((_, i) => <SongCard key={i} />)}
           </div>
-          <ScrollBar orientation="horizontal" className="hidden" />
+          <ScrollBar orientation="horizontal" className="hidden sm:flex" />
         </ScrollArea>
       </div>
 
@@ -95,52 +71,14 @@ export default function Page() {
           <div className="flex gap-4">
             {latest.length ? [...new Set(latest.map(a => a.artists.primary[0].id))].map(id => (
               <ArtistCard key={id} id={id} image={latest.find(a => a.artists.primary[0].id === id).artists.primary[0].image[2]?.url || `https://az-avatar.vercel.app/api/avatar/?bgColor=0f0f0f0&fontSize=60&text=${latest.find(a => a.artists.primary[0].id === id).artists.primary[0].name.split("")[0].toUpperCase() || "UN"}`} name={latest.find(a => a.artists.primary[0].id === id).artists.primary[0].name} />
-            )) : (
-              <>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <div className="grid gap-2">
-                  <Skeleton className="h-[100px] w-[100px] rounded-2xl" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-              </>
-            )}
+            )) : Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="grid gap-2">
+                <Skeleton className="h-[100px] w-[100px] rounded-full" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            ))}
           </div>
-          <ScrollBar orientation="horizontal" className="hidden" />
+          <ScrollBar orientation="horizontal" className="hidden sm:flex" />
         </ScrollArea>
       </div>
 
@@ -151,24 +89,11 @@ export default function Page() {
           <div className="flex gap-4">
             {popular.length ? popular.map((song) => (
               <SongCard key={song.id} id={song.id} image={song.image[2].url} title={song.name} artist={song.artists.primary[0].name} />
-            )) : (
-              <>
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-                <SongCard />
-              </>
-            )}
+            )) : Array.from({ length: 10 }).map((_, i) => <SongCard key={i} />)}
           </div>
-          <ScrollBar orientation="horizontal" className="hidden" />
+          <ScrollBar orientation="horizontal" className="hidden sm:flex" />
         </ScrollArea>
       </div>
     </main>
   )
-}
+              }
