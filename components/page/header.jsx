@@ -9,19 +9,27 @@ import Link from "next/link";
 
 export default function Header() {
     const path = usePathname();
-    console.log(path);
     return (
-        <header className="grid gap-3 pt-5 px-5 pb-5 md:px-20 lg:px-32">
-            <div className="flex items-center justify-between">
+        <header className="grid gap-2 pt-5 px-5 pb-5 md:px-20 lg:px-32">
+            <div className="flex items-center sm:justify-between w-full gap-2">
                 {path == "/" ? (
-                    <Button size="icon" onClick={() => { navigator.share({ url: window.location.href }) }} variant="outline" className="rounded-full lg:-ml-4"><Share2 className="w-4 h-4" /></Button>
+                    <div className="flex items-center gap-1">
+                        <Logo />
+                        <ModeToggle />
+                    </div>
                 ) : (
-                    <Button size="icon" asChild variant="outline" className="rounded-full"><Link href="/"><ChevronLeft className="w-5 h-5" /></Link></Button>
+                    <div className="flex justify-between w-full items-center gap-1">
+                        <Logo />
+                        <Button className="rounded-full sm:hidden h-8 px-3" asChild><Link href="/" className="flex items-center gap-1"><ChevronLeft className="w-4 h-4" />Back</Link></Button>
+                    </div>
                 )}
-                <Logo />
-                <ModeToggle />
+                <div className="hidden sm:flex items-center gap-3 w-full max-w-md">
+                    <Search />
+                    {path != "/" && (
+                        <Button className="h-10 px-3" asChild><Link href="/" className="flex items-center gap-1"><ChevronLeft className="w-4 h-4" />Back</Link></Button>
+                    )}
+                </div>
             </div>
-            <Search />
         </header>
     )
 }
