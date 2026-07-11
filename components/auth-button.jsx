@@ -1,10 +1,29 @@
 "use client"
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs"
 import { clerkEnabled } from "./clerk-provider-wrapper"
 import { LogIn } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export default function AuthButton() {
-    if (!clerkEnabled) return null
+    const [Components, setComponents] = useState(null)
+
+    useEffect(() => {
+        if (!clerkEnabled) return
+        // Dynamically import Clerk components only when enabled
+        import("@clerk/nextjs").then((m) => {
+            setComponents({
+                SignedIn: m.SignedIn,
+                SignedOut: m.SignedOut,
+                SignInButton: m.SignInButton,
+                UserButton: m.UserButton,
+            })
+        }).catch(() => {
+            // Clerk package not properly installed, silently skip
+        })
+    }, [])
+
+    if (!clerkEnabled || !Components) return null
+
+    const { SignedIn, SignedOut, SignInButton, UserButton } = Components
 
     return (
         <>
@@ -13,7 +32,10 @@ export default function AuthButton() {
             </SignedIn>
             <SignedOut>
                 <SignInButton mode="modal">
-                    <button className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center transition hover:opacity-80" aria-label="Sign in">
+                    <button
+                        className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center transition hover:opacity-80"
+                        aria-label="Sign in"
+                    >
                         <LogIn className="h-4 w-4" />
                     </button>
                 </SignInButton>
