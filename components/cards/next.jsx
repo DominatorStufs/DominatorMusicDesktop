@@ -5,7 +5,7 @@ import { Play } from "lucide-react";
 export default function Next({ name, artist, image, id, next = true }) {
     return (
         <Link href={`/${id}`}>
-            <div className="flex items-center gap-3 bg-secondary p-2 rounded-md">
+            <div className="flex items-center gap-3 bg-secondary p-2 rounded-md transition hover:bg-secondary/70 active:scale-[0.98]">
                 <img src={image} className="aspect-square w-10 rounded-md" />
                 <div className="overflow-hidden flex-1">
                     <h1 className="text-secondary-foreground text-base text-ellipsis whitespace-nowrap overflow-hidden sm:max-w-md max-w-[150px]">
