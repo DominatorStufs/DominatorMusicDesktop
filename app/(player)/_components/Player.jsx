@@ -227,7 +227,7 @@ export default function Player({ id }) {
                                             )}
                                         </Button>
                                         <Button size="icon" variant="ghost" onClick={handleShare}><Link2 className="h-4 w-4" /></Button>
-                                        <ShareStoryButton name={data?.name} artist={data?.artists?.primary?.[0]?.name || "unknown"} image={data?.image?.[2]?.url || data?.image?.[1]?.url} />
+                                        <ShareStoryButton id={data?.id} name={data?.name} artist={data?.artists?.primary?.[0]?.name || "unknown"} image={data?.image?.[2]?.url || data?.image?.[1]?.url} />
                                     </div>
                                 </div>
                             </div>
