@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground select-none;
+  }
+  ::-webkit-scrollbar{
+    @apply w-0 h-0;
+  }
+  ::-webkit-scrollbar-track{
+    @apply bg-transparent;
+  }
+  .blurz{
+    animation: blur .7s forwards;
+  }
+
+  @keyframes blur {
+    0%{
+      filter: blur(5px);
+    }
+    20%{
+      filter: blur(5px);
+    }
+    40%{
+      filter: blur(5px);
+    }
+    60%{
+      filter: blur(5px);
+    }
+    80%{
+      filter: blur(5px);
+    }
+    100%{
+      filter: blur(0);
+    }
+  }
+}
+
+/* ===================== UI Style + Glass Effect system ===================== */
+/* Kept unlayered on purpose so it always wins over @layer utilities/components. */
+
+.glass-surface {
+  transition: background-color .4s ease, backdrop-filter .4s ease, -webkit-backdrop-filter .4s ease, border-radius .4s ease, box-shadow .4s ease, bottom .4s ease, left .4s ease, right .4s ease, max-width .4s ease;
+}
+
+/* ---------- Flat / 2D style ---------- */
+html[data-ui-style="flat"] .rounded-2xl,
+html[data-ui-style="flat"] .rounded-xl,
+html[data-ui-style="flat"] .rounded-md {
+  border-radius: 0.4rem !important;
+}
+html[data-ui-style="flat"] .shadow-lg,
+html[data-ui-style="flat"] .shadow-md {
+  box-shadow: none !important;
+}
+html[data-ui-style="flat"] .blur-3xl {
+  display: none !important;
+}
+html[data-ui-style="flat"] .glass-surface {
+  background: hsl(var(--background)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: none !important;
+}
+
+/* ---------- iOS style ---------- */
+html[data-ui-style="ios"] .rounded-2xl,
+html[data-ui-style="ios"] .rounded-md {
+  border-radius: 1.1rem !important;
+}
+html[data-ui-style="ios"] .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+html[data-ui-style="ios"] .player-bar {
+  bottom: 5.5rem !important;
+  left: 1rem !important;
+  right: 1rem !important;
+  max-width: 460px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 1.5rem !important;
+  border-width: 1px !important;
+}
+
+/* ---------- Glass Effect toggle (default OFF) ---------- */
+html[data-glass="on"] .glass-surface {
+  background: hsl(var(--background) / 0.55) !important;
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 8px 32px hsl(var(--foreground) / 0.08);
+}
+html.dark[data-glass="on"] .glass-surface {
+  background: hsl(var(--background) / 0.45) !important;
+}
+
+/* ---------- Neon style: dark background, glowing accent edges ---------- */
+html[data-ui-style="neon"] {
+  --radius: 0.75rem;
+}
+html[data-ui-style="neon"] .glass-surface {
+  border: 1px solid hsl(var(--primary) / 0.6) !important;
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.35), 0 0 2px hsl(var(--primary) / 0.6) inset !important;
+}
+html[data-ui-style="neon"] button,
+html[data-ui-style="neon"] a {
+  transition: box-shadow .3s ease, transform .2s ease;
+}
+
+/* ---------- Retro style: warm, boxy, hard shadows ---------- */
+html[data-ui-style="retro"] {
+  --radius: 0.2rem;
+}
+html[data-ui-style="retro"] .rounded-2xl,
+html[data-ui-style="retro"] .rounded-xl,
+html[data-ui-style="retro"] .rounded-md,
+html[data-ui-style="retro"] .rounded-full {
+  border-radius: 0.2rem !important;
+}
+html[data-ui-style="retro"] .glass-surface {
+  box-shadow: 6px 6px 0 hsl(var(--foreground) / 0.15) !important;
+  border: 2px solid hsl(var(--foreground) / 0.25) !important;
+  backdrop-filter: none !important;
+}
+
+/* ---------- Pastel style: soft rounded, airy ---------- */
+html[data-ui-style="pastel"] {
+  --radius: 1.75rem;
+}
+html[data-ui-style="pastel"] .glass-surface {
+  border-radius: 1.75rem;
+  box-shadow: 0 10px 30px hsl(var(--foreground) / 0.06) !important;
+}
+
+/* ---------- Cyberpunk style: high contrast, sharp accents ---------- */
+html[data-ui-style="cyberpunk"] {
+  --radius: 0.35rem;
+}
+html[data-ui-style="cyberpunk"] .glass-surface {
+  border-left: 3px solid hsl(var(--primary)) !important;
+  border-radius: 0.35rem !important;
+}
+
+/* ---------- Minimal Mono style: flat grayscale, no accent glow ---------- */
+html[data-ui-style="mono"] .glass-surface {
+  box-shadow: none !important;
+  border: 1px solid hsl(var(--border)) !important;
+  backdrop-filter: none !important;
+}
+html[data-ui-style="mono"] img {
+  filter: grayscale(0.15);
+}
