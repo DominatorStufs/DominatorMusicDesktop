@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import Next from "@/components/cards/next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getLikedSongs, getPlaylists, createPlaylist, deletePlaylist } from "@/lib/library";
-import { Heart, ListMusic, Plus, Trash2 } from "lucide-react";
+import { getLikedSongs, getPlaylists, createPlaylist, deletePlaylist, encodePlaylistForShare } from "@/lib/library";
+import { getWeeklyStats, getMonthlyStats } from "@/lib/stats";
+import { StatsSummary } from "@/components/stats-recap";
+import { Heart, ListMusic, Plus, Trash2, BarChart3, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function LibraryPage() {
@@ -12,11 +14,17 @@ export default function LibraryPage() {
     const [playlists, setPlaylists] = useState([]);
     const [newPlaylistName, setNewPlaylistName] = useState("");
     const [creating, setCreating] = useState(false);
+    const [statsRange, setStatsRange] = useState("weekly");
+    const [stats, setStats] = useState(null);
 
     useEffect(() => {
         setLiked(getLikedSongs());
         setPlaylists(getPlaylists());
     }, []);
+
+    useEffect(() => {
+        setStats(statsRange === "weekly" ? getWeeklyStats() : getMonthlyStats());
+    }, [statsRange]);
 
     const handleCreatePlaylist = () => {
         if (!newPlaylistName.trim()) return;
@@ -33,11 +41,43 @@ export default function LibraryPage() {
         toast.success("Playlist deleted");
     };
 
+    const handleSharePlaylist = async (playlist) => {
+        if (!playlist.songs.length) {
+            toast.error("Add a few songs before sharing!");
+            return;
+        }
+        const encoded = encodePlaylistForShare(playlist);
+        const link = `${window.location.origin}/playlist/import?data=${encoded}`;
+        try {
+            if (navigator.share) {
+                await navigator.share({ title: `${playlist.name} - Playlist`, url: link });
+            } else {
+                await navigator.clipboard.writeText(link);
+                toast.success("Playlist link copied! Send it to a friend to build it together.");
+            }
+        } catch (e) { }
+    };
+
     return (
         <main className="px-6 py-5 md:px-20 lg:px-32">
             <div className="mb-2">
                 <h1 className="text-2xl font-semibold flex items-center gap-2"><Heart className="h-5 w-5" /> Your Library</h1>
                 <p className="text-sm text-muted-foreground">Liked songs and playlists, saved on this device.</p>
+            </div>
+
+            {/* Listening Stats */}
+            <div className="mt-10">
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 className="text-base flex items-center gap-2"><BarChart3 className="h-4 w-4" /> Your Stats</h2>
+                        <p className="text-xs text-muted-foreground">A recap also pops up every Sunday and on the 1st of the month.</p>
+                    </div>
+                    <div className="flex rounded-full border border-border overflow-hidden text-xs">
+                        <button onClick={() => setStatsRange("weekly")} className={`px-3 py-1.5 transition ${statsRange === "weekly" ? "bg-primary text-primary-foreground" : "hover:bg-secondary"}`}>Week</button>
+                        <button onClick={() => setStatsRange("monthly")} className={`px-3 py-1.5 transition ${statsRange === "monthly" ? "bg-primary text-primary-foreground" : "hover:bg-secondary"}`}>Month</button>
+                    </div>
+                </div>
+                <StatsSummary stats={stats} />
             </div>
 
             {/* Liked Songs */}
@@ -86,9 +126,14 @@ export default function LibraryPage() {
                             <div key={p.id} className="rounded-md border border-border bg-secondary/40 p-4">
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-sm font-medium">{p.name}</h3>
-                                    <button onClick={() => handleDeletePlaylist(p.id)} aria-label="Delete playlist">
-                                        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive transition" />
-                                    </button>
+                                    <div className="flex items-center gap-2">
+                                        <button onClick={() => handleSharePlaylist(p)} aria-label="Share playlist">
+                                            <Share2 className="h-4 w-4 text-muted-foreground hover:text-foreground transition" />
+                                        </button>
+                                        <button onClick={() => handleDeletePlaylist(p.id)} aria-label="Delete playlist">
+                                            <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive transition" />
+                                        </button>
+                                    </div>
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-1">{p.songs.length} song{p.songs.length !== 1 ? "s" : ""}</p>
                             </div>

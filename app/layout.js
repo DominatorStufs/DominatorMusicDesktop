@@ -8,6 +8,8 @@ import MobileMenu from "@/components/mobile-menu";
 import MusicProvider from "@/components/music-provider";
 import UIStyleButton from "@/components/ui-style-button";
 import AppClerkProvider from "@/components/clerk-provider-wrapper";
+import StatsRecap from "@/components/stats-recap";
+import OnboardingTour from "@/components/onboarding-tour";
 
 const bricolage_grotesque = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -59,6 +61,8 @@ export default function RootLayout({ children }) {
               </MusicProvider>
               <MobileMenu />
               <UIStyleButton />
+              <StatsRecap />
+              <OnboardingTour />
               <Toaster position="top-center" visibleToasts={1} />
             </UIStyleProvider>
           </ThemeProvider>

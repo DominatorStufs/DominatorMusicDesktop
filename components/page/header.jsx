@@ -7,6 +7,7 @@ import { ChevronDown, ChevronLeft, Heart, Share2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import AuthButton from "../auth-button";
+import NowPlayingBadge from "../now-playing-badge";
 
 export default function Header() {
     const path = usePathname();
@@ -30,6 +31,7 @@ export default function Header() {
                 )}
                 <div className="hidden sm:flex items-center gap-3 w-full max-w-md">
                     <Search />
+                    <NowPlayingBadge />
                     {path != "/" && (
                         <Button className="h-10 px-3" asChild><Link href="/" className="flex items-center gap-1"><ChevronLeft className="w-4 h-4" />Back</Link></Button>
                     )}

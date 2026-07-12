@@ -14,7 +14,11 @@ import { IoPause } from "react-icons/io5";
 import ShareStoryButton from "@/components/share-story";
 import { Heart } from "lucide-react";
 import { isLiked, toggleLiked, addToHistory } from "@/lib/library";
+import { logListenSession } from "@/lib/stats";
 import { cn } from "@/lib/utils";
+import { useEqualizer } from "@/hooks/use-equalizer";
+import EqualizerButton from "@/components/equalizer-button";
+import { extractDominantColor } from "@/lib/color-extract";
 
 export default function Player({ id }) {
     const [data, setData] = useState([]);
@@ -30,6 +34,11 @@ export default function Player({ id }) {
     const [muted, setMuted] = useState(false);
     const next = useContext(NextContext);
     const { current, setCurrent } = useMusic();
+    const eq = useEqualizer(audioRef);
+    const songInfoRef = useRef(null);
+    const listenedRef = useRef(0);
+    const lastTimeRef = useRef(0);
+    const [bgColor, setBgColor] = useState(null);
 
     const getSong = async () => {
         try {
@@ -42,6 +51,7 @@ export default function Player({ id }) {
             setAudioURL(urls[4]?.url || urls[3]?.url || urls[2]?.url || urls[1]?.url || urls[0]?.url || "");
             if (song?.id) {
                 setLiked(isLiked(song.id));
+                songInfoRef.current = { id: song.id, name: song.name, artist: song.artists?.primary?.[0]?.name || "unknown" };
                 addToHistory({
                     id: song.id,
                     name: song.name,
@@ -49,6 +59,9 @@ export default function Player({ id }) {
                     image: song.image?.[1]?.url || ""
                 });
             }
+
+            const artUrl = song?.image?.[2]?.url || song?.image?.[1]?.url;
+            extractDominantColor(artUrl).then(setBgColor);
 
             // Media Session API — shows song info + controls on lock screen / OS notification
             if ("mediaSession" in navigator && song) {
@@ -164,14 +177,21 @@ export default function Player({ id }) {
         getSong();
         localStorage.setItem("last-played", id);
         localStorage.removeItem("p");
+        listenedRef.current = 0;
+        lastTimeRef.current = 0;
         if (current) {
             audioRef.current.currentTime = parseFloat(current + 1);
         }
         const handleTimeUpdate = () => {
             try {
-                setCurrentTime(audioRef.current.currentTime);
+                const cur = audioRef.current.currentTime;
+                if (cur > lastTimeRef.current) {
+                    listenedRef.current += (cur - lastTimeRef.current);
+                }
+                lastTimeRef.current = cur;
+                setCurrentTime(cur);
                 setDuration(audioRef.current.duration);
-                setCurrent(audioRef.current.currentTime);
+                setCurrent(cur);
             } catch (e) {
                 setPlaying(false);
             }
@@ -181,8 +201,11 @@ export default function Player({ id }) {
             if (audioRef.current) {
                 audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
             }
+            if (songInfoRef.current) {
+                logListenSession(songInfoRef.current, listenedRef.current);
+            }
         };
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         if (currentTime === duration && !isLooping && duration !== 0) {
@@ -191,7 +214,12 @@ export default function Player({ id }) {
     }, [currentTime, duration, isLooping, next?.nextData?.id]);
 
     return (
-        <div className="mb-3 mt-10">
+        <div
+            className="mb-3 mt-10 pt-6 -mt-6 transition-colors duration-700"
+            style={bgColor ? {
+                background: `linear-gradient(to bottom, rgba(${bgColor.r},${bgColor.g},${bgColor.b},0.18), transparent 420px)`
+            } : undefined}
+        >
             <audio
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
@@ -286,6 +314,7 @@ export default function Player({ id }) {
                                     </div>
 
                                     <div className="flex items-center gap-1 sm:gap-2">
+                                        <EqualizerButton eq={eq} />
                                         <Button size="icon" variant="ghost" onClick={loopSong}>
                                             {!isLooping ? <Repeat className="h-4 w-4" /> : <Repeat1 className="h-4 w-4" />}
                                         </Button>

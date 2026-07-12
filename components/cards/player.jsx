@@ -12,7 +12,10 @@ import { IoPause } from "react-icons/io5";
 import { useMusic } from "../music-provider";
 import { Heart } from "lucide-react";
 import { isLiked, toggleLiked, addToHistory } from "@/lib/library";
+import { logListenSession } from "@/lib/stats";
 import { cn } from "@/lib/utils";
+import { useEqualizer } from "@/hooks/use-equalizer";
+import EqualizerButton from "@/components/equalizer-button";
 
 export default function Player() {
     const [data, setData] = useState([]);
@@ -24,6 +27,10 @@ export default function Player() {
     const [isLooping, setIsLooping] = useState(false);
     const [liked, setLiked] = useState(false);
     const values = useContext(MusicContext);
+    const eq = useEqualizer(audioRef);
+    const songInfoRef = useRef(null);
+    const listenedRef = useRef(0);
+    const lastTimeRef = useRef(0);
 
     const getSong = async () => {
         try {
@@ -35,6 +42,7 @@ export default function Player() {
             setAudioURL(urls[2]?.url || urls[1]?.url || urls[0]?.url || "");
             if (song?.id) {
                 setLiked(isLiked(song.id));
+                songInfoRef.current = { id: song.id, name: song.name, artist: song.artists?.primary?.[0]?.name || "unknown" };
                 addToHistory({
                     id: song.id,
                     name: song.name,
@@ -88,15 +96,22 @@ export default function Player() {
     useEffect(() => {
         if (values.music) {
             getSong();
+            listenedRef.current = 0;
+            lastTimeRef.current = 0;
             if (current) {
                 audioRef.current.currentTime = parseFloat(current + 1);
             }
             setPlaying(localStorage.getItem("p") == "true" && true || !localStorage.getItem("p") && true);
             const handleTimeUpdate = () => {
                 try {
-                    setCurrentTime(audioRef.current.currentTime);
+                    const cur = audioRef.current.currentTime;
+                    if (cur > lastTimeRef.current) {
+                        listenedRef.current += (cur - lastTimeRef.current);
+                    }
+                    lastTimeRef.current = cur;
+                    setCurrentTime(cur);
                     setDuration(audioRef.current.duration);
-                    setCurrent(audioRef.current.currentTime);
+                    setCurrent(cur);
                 }
                 catch (e) {
                     setPlaying(false);
@@ -106,6 +121,9 @@ export default function Player() {
             return () => {
                 if (audioRef.current) {
                     audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+                }
+                if (songInfoRef.current) {
+                    logListenSession(songInfoRef.current, listenedRef.current);
                 }
             };
         }
@@ -140,6 +158,7 @@ export default function Player() {
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
+                            <EqualizerButton eq={eq} />
                             <Button size="icon" className="p-0 h-9 w-9" variant={!liked ? "ghost" : "secondary"} onClick={handleLike}>
                                 <Heart className={cn("h-3.5 w-3.5 transition", liked && "fill-red-500 text-red-500")} />
                             </Button>
