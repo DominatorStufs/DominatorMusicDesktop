@@ -175,18 +175,25 @@ export default function ShareStoryButton({ id, name, artist, image }) {
     const handleShare = async () => {
         if (!preview) return
         const link = getSongLink()
-        const shareText = `🎧 ${name} - ${artist}\nListen on DominatorMusic: ${link}`
+        // Only put the link in ONE field. If we send both `text` (with the
+        // link inside it) and a separate `url`, most share sheets
+        // (WhatsApp, Instagram) append both and the link shows up twice.
+        const caption = `🎧 ${name} - ${artist}\nListen on DominatorMusic:`
         try {
             const file = new File([preview.blob], "now-playing.png", { type: "image/png" })
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                // Sharing an image: keep the link only inside the text, since
+                // the separate `url` field is ignored/duplicated by most apps
+                // once a file is attached.
                 await navigator.share({
                     files: [file],
                     title: `${name} - ${artist}`,
-                    text: shareText,
-                    url: link,
+                    text: `${caption} ${link}`,
                 })
             } else if (navigator.share) {
-                await navigator.share({ title: `${name} - ${artist}`, text: shareText, url: link })
+                // No image support: text + url as two separate fields is fine
+                // here since there's no file competing for the caption.
+                await navigator.share({ title: `${name} - ${artist}`, text: caption, url: link })
             } else {
                 await handleCopy()
             }
