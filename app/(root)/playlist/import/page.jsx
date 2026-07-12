@@ -1,13 +1,13 @@
 "use client"
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { decodeSharedPlaylist, importPlaylist } from "@/lib/library";
 import { Button } from "@/components/ui/button";
 import Next from "@/components/cards/next";
-import { ListMusic, Check } from "lucide-react";
+import { ListMusic, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export default function ImportPlaylistPage() {
+function ImportPlaylistContent() {
     const params = useSearchParams();
     const router = useRouter();
     const [playlist, setPlaylist] = useState(null);
@@ -63,5 +63,21 @@ export default function ImportPlaylistPage() {
                 ))}
             </div>
         </main>
+    );
+}
+
+function ImportPlaylistFallback() {
+    return (
+        <main className="px-6 py-24 flex items-center justify-center">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        </main>
+    );
+}
+
+export default function ImportPlaylistPage() {
+    return (
+        <Suspense fallback={<ImportPlaylistFallback />}>
+            <ImportPlaylistContent />
+        </Suspense>
     );
 }
