@@ -1,0 +1,696 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground select-none;
+  }
+  ::-webkit-scrollbar{
+    @apply w-0 h-0;
+  }
+  ::-webkit-scrollbar-track{
+    @apply bg-transparent;
+  }
+  .blurz{
+    animation: blur .7s forwards;
+  }
+
+  @keyframes blur {
+    0%{
+      filter: blur(5px);
+    }
+    20%{
+      filter: blur(5px);
+    }
+    40%{
+      filter: blur(5px);
+    }
+    60%{
+      filter: blur(5px);
+    }
+    80%{
+      filter: blur(5px);
+    }
+    100%{
+      filter: blur(0);
+    }
+  }
+}
+
+/* ===================== UI Style + Glass Effect system ===================== */
+/* Kept unlayered on purpose so it always wins over @layer utilities/components. */
+
+.glass-surface {
+  transition: background-color .4s ease, backdrop-filter .4s ease, -webkit-backdrop-filter .4s ease, border-radius .4s ease, box-shadow .4s ease, bottom .4s ease, left .4s ease, right .4s ease, max-width .4s ease;
+}
+
+/* ---------- Flat / 2D style ---------- */
+html[data-ui-style="flat"] .rounded-2xl,
+html[data-ui-style="flat"] .rounded-xl,
+html[data-ui-style="flat"] .rounded-md {
+  border-radius: 0.4rem !important;
+}
+html[data-ui-style="flat"] .shadow-lg,
+html[data-ui-style="flat"] .shadow-md {
+  box-shadow: none !important;
+}
+html[data-ui-style="flat"] .blur-3xl {
+  display: none !important;
+}
+html[data-ui-style="flat"] .glass-surface {
+  background: hsl(var(--background)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: none !important;
+}
+html[data-ui-style="flat"] img {
+  box-shadow: none !important;
+  border-radius: 0.4rem !important;
+}
+html[data-ui-style="flat"] .bg-secondary {
+  background: hsl(var(--foreground) / 0.06) !important;
+}
+html[data-ui-style="flat"] button {
+  box-shadow: none !important;
+  transition: background-color .15s linear;
+}
+html[data-ui-style="flat"] * {
+  text-shadow: none !important;
+}
+
+/* ---------- iOS style ----------
+   Modelled on iOS 17/18: continuous "squircle" corners, SF-style type,
+   grouped-inset cards, translucent chrome and springy press feedback. */
+html[data-ui-style="ios"] {
+  --radius: 0.85rem;
+  --ios-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+html[data-ui-style="ios"] body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Segoe UI", system-ui, sans-serif;
+  letter-spacing: -0.012em;
+}
+/* Apple uses tighter, heavier headings */
+html[data-ui-style="ios"] h1,
+html[data-ui-style="ios"] h2,
+html[data-ui-style="ios"] h3 {
+  letter-spacing: -0.028em;
+  font-weight: 700;
+}
+
+/* Continuous corners everywhere */
+html[data-ui-style="ios"] .rounded-2xl {
+  border-radius: 1.35rem !important;
+}
+html[data-ui-style="ios"] .rounded-xl {
+  border-radius: 1.1rem !important;
+}
+html[data-ui-style="ios"] .rounded-md {
+  border-radius: 0.85rem !important;
+}
+html[data-ui-style="ios"] img.rounded-md,
+html[data-ui-style="ios"] .rounded-2xl img {
+  border-radius: inherit !important;
+}
+
+/* Translucent navigation chrome, like a real iOS nav bar */
+html[data-ui-style="ios"] .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: hsl(var(--background) / 0.72) !important;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid hsl(var(--foreground) / 0.12) !important;
+}
+
+/* Floating "Now Playing" bar with a soft ambient shadow */
+html[data-ui-style="ios"] .player-bar {
+  bottom: 5.5rem !important;
+  left: 0.75rem !important;
+  right: 0.75rem !important;
+  max-width: 460px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 1.6rem !important;
+  border: 0.5px solid hsl(var(--foreground) / 0.12) !important;
+  background: hsl(var(--background) / 0.8) !important;
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  box-shadow:
+    0 12px 32px hsl(var(--foreground) / 0.16),
+    0 2px 8px hsl(var(--foreground) / 0.08) !important;
+}
+
+/* Hairline dividers - iOS uses sub-pixel borders, not 1px boxes.
+   NOTE: never widen this to `*`. Tailwind preflight gives every element
+   `border-style: solid; border-width: 0`, so a universal border-width paints a
+   visible box around every node on the page. */
+html[data-ui-style="ios"] .glass-surface,
+html[data-ui-style="ios"] .player-bar,
+html[data-ui-style="ios"] .mobile-tabbar {
+  border-width: 0.5px !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
+}
+
+/* Grouped inset list/card look */
+html[data-ui-style="ios"] .bg-secondary {
+  background: hsl(var(--foreground) / 0.055) !important;
+}
+html.dark[data-ui-style="ios"] .bg-secondary {
+  background: hsl(var(--foreground) / 0.09) !important;
+}
+
+/* Springy press feedback on every control */
+html[data-ui-style="ios"] button,
+html[data-ui-style="ios"] a,
+html[data-ui-style="ios"] [role="button"] {
+  transition: transform 0.24s var(--ios-spring), opacity 0.2s ease,
+    background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-ui-style="ios"] button:active,
+html[data-ui-style="ios"] [role="button"]:active {
+  transform: scale(0.94);
+  opacity: 0.82;
+}
+html[data-ui-style="ios"] .cursor-pointer:active img,
+html[data-ui-style="ios"] a:active img {
+  transform: scale(0.97);
+  transition: transform 0.24s var(--ios-spring);
+}
+
+/* Pill-shaped primary buttons, the iOS default */
+html[data-ui-style="ios"] button:not(.rounded-full):not([class*="h-8"]):not([class*="h-9"]) {
+  border-radius: 0.8rem !important;
+}
+
+/* iOS-style range slider: thin track, prominent thumb */
+html[data-ui-style="ios"] input[type="range"] {
+  height: 4px;
+  border-radius: 2px;
+}
+html[data-ui-style="ios"] [role="slider"] {
+  box-shadow: 0 1px 4px hsl(var(--foreground) / 0.3) !important;
+}
+
+/* Scroll behaviour that feels native */
+html[data-ui-style="ios"] .overflow-x-auto,
+html[data-ui-style="ios"] [data-radix-scroll-area-viewport] {
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+html[data-ui-style="ios"] [data-radix-scroll-area-viewport] > div > * {
+  scroll-snap-align: start;
+}
+
+/* Tab bar at the bottom, frosted like iOS */
+html[data-ui-style="ios"] .mobile-tabbar {
+  background: hsl(var(--background) / 0.78) !important;
+  backdrop-filter: saturate(180%) blur(22px);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  border: 0.5px solid hsl(var(--foreground) / 0.12) !important;
+  box-shadow: 0 8px 28px hsl(var(--foreground) / 0.14) !important;
+}
+
+/* ---------- Glass Effect toggle (default OFF) ---------- */
+html[data-glass="on"] .glass-surface {
+  background: hsl(var(--background) / 0.55) !important;
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 8px 32px hsl(var(--foreground) / 0.08);
+}
+html.dark[data-glass="on"] .glass-surface {
+  background: hsl(var(--background) / 0.45) !important;
+}
+
+/* ---------- Neon style: dark surfaces, glowing accent edges ---------- */
+html[data-ui-style="neon"] {
+  --radius: 0.75rem;
+  --background: 265 40% 6%;
+  --foreground: 280 20% 96%;
+  --card: 265 38% 9%;
+  --secondary: 268 35% 14%;
+  --secondary-foreground: 280 25% 95%;
+  --muted: 268 30% 16%;
+  --muted-foreground: 275 22% 68%;
+  --border: 285 55% 28%;
+  --primary: 292 92% 62%;
+  --primary-foreground: 265 40% 8%;
+  --accent: 292 80% 22%;
+}
+html.dark[data-ui-style="neon"] {
+  --background: 265 45% 4%;
+  --secondary: 268 40% 12%;
+}
+html[data-ui-style="neon"] .glass-surface {
+  border: 1px solid hsl(var(--primary) / 0.6) !important;
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.35),
+    0 0 2px hsl(var(--primary) / 0.6) inset !important;
+}
+html[data-ui-style="neon"] button,
+html[data-ui-style="neon"] a {
+  transition: box-shadow .3s ease, transform .2s ease, text-shadow .3s ease;
+}
+/* Headings glow softly */
+html[data-ui-style="neon"] h1 {
+  text-shadow: 0 0 14px hsl(var(--primary) / 0.45);
+}
+/* Artwork picks up an accent rim */
+html[data-ui-style="neon"] img.rounded-md,
+html[data-ui-style="neon"] img.rounded-2xl {
+  box-shadow: 0 0 0 1px hsl(var(--primary) / 0.35),
+    0 0 18px hsl(var(--primary) / 0.22);
+}
+html[data-ui-style="neon"] .bg-secondary {
+  background: hsl(var(--primary) / 0.08) !important;
+  border: 1px solid hsl(var(--primary) / 0.18);
+}
+html[data-ui-style="neon"] button:hover {
+  box-shadow: 0 0 16px hsl(var(--primary) / 0.5);
+}
+html[data-ui-style="neon"] .player-bar {
+  border: 1px solid hsl(var(--primary) / 0.5) !important;
+  box-shadow: 0 0 30px hsl(var(--primary) / 0.3) !important;
+}
+
+/* ---------- Retro style: warm paper, boxy, hard shadows ---------- */
+html[data-ui-style="retro"] {
+  --radius: 0.2rem;
+  --background: 38 44% 92%;
+  --foreground: 24 35% 14%;
+  --card: 38 50% 96%;
+  --secondary: 34 38% 85%;
+  --secondary-foreground: 24 35% 16%;
+  --muted: 34 32% 82%;
+  --muted-foreground: 26 20% 38%;
+  --border: 28 30% 62%;
+  --primary: 14 78% 46%;
+  --primary-foreground: 38 50% 96%;
+}
+html.dark[data-ui-style="retro"] {
+  --background: 26 22% 12%;
+  --foreground: 36 38% 90%;
+  --card: 26 22% 16%;
+  --secondary: 26 20% 20%;
+  --secondary-foreground: 36 38% 90%;
+  --muted: 26 18% 24%;
+  --muted-foreground: 34 20% 66%;
+  --border: 28 22% 34%;
+  --primary: 18 82% 56%;
+}
+html[data-ui-style="retro"] .rounded-2xl,
+html[data-ui-style="retro"] .rounded-xl,
+html[data-ui-style="retro"] .rounded-md,
+html[data-ui-style="retro"] .rounded-full {
+  border-radius: 0.2rem !important;
+}
+html[data-ui-style="retro"] .glass-surface {
+  box-shadow: 6px 6px 0 hsl(var(--foreground) / 0.15) !important;
+  border: 2px solid hsl(var(--foreground) / 0.25) !important;
+  backdrop-filter: none !important;
+}
+/* Hard offset shadows on cards and artwork */
+html[data-ui-style="retro"] img.rounded-md,
+html[data-ui-style="retro"] img.rounded-2xl {
+  border: 2px solid hsl(var(--foreground) / 0.3);
+  box-shadow: 4px 4px 0 hsl(var(--foreground) / 0.2);
+}
+html[data-ui-style="retro"] button {
+  border: 2px solid hsl(var(--foreground) / 0.3) !important;
+  box-shadow: 3px 3px 0 hsl(var(--foreground) / 0.2) !important;
+  transition: transform .08s linear, box-shadow .08s linear;
+}
+html[data-ui-style="retro"] button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 hsl(var(--foreground) / 0.2) !important;
+}
+html[data-ui-style="retro"] h1,
+html[data-ui-style="retro"] h2 {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Pastel style: soft rounded, airy ---------- */
+html[data-ui-style="pastel"] {
+  --radius: 1.75rem;
+  --background: 330 55% 98%;
+  --foreground: 265 28% 26%;
+  --card: 0 0% 100%;
+  --secondary: 320 60% 94%;
+  --secondary-foreground: 265 28% 30%;
+  --muted: 300 45% 95%;
+  --muted-foreground: 270 16% 52%;
+  --border: 315 45% 89%;
+  --primary: 340 78% 70%;
+  --primary-foreground: 0 0% 100%;
+}
+html.dark[data-ui-style="pastel"] {
+  --background: 265 30% 12%;
+  --foreground: 320 30% 94%;
+  --card: 265 28% 16%;
+  --secondary: 280 26% 20%;
+  --secondary-foreground: 320 30% 94%;
+  --muted: 280 22% 24%;
+  --muted-foreground: 310 18% 70%;
+  --border: 285 24% 30%;
+  --primary: 340 70% 72%;
+}
+html[data-ui-style="pastel"] .glass-surface {
+  border-radius: 1.75rem;
+  box-shadow: 0 10px 30px hsl(var(--foreground) / 0.06) !important;
+  border: 1px solid hsl(var(--foreground) / 0.06) !important;
+}
+html[data-ui-style="pastel"] .rounded-md,
+html[data-ui-style="pastel"] .rounded-xl {
+  border-radius: 1.4rem !important;
+}
+html[data-ui-style="pastel"] img {
+  border-radius: 1.4rem !important;
+}
+html[data-ui-style="pastel"] .bg-secondary {
+  background: hsl(var(--primary) / 0.07) !important;
+}
+html[data-ui-style="pastel"] button {
+  box-shadow: 0 4px 14px hsl(var(--foreground) / 0.07);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+}
+html[data-ui-style="pastel"] button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px hsl(var(--foreground) / 0.1);
+}
+
+/* ---------- Cyberpunk style: high contrast, sharp accents ---------- */
+html[data-ui-style="cyberpunk"] {
+  --radius: 0.35rem;
+  --background: 230 45% 7%;
+  --foreground: 55 95% 88%;
+  --card: 232 42% 11%;
+  --secondary: 234 40% 15%;
+  --secondary-foreground: 55 90% 88%;
+  --muted: 234 34% 18%;
+  --muted-foreground: 185 70% 62%;
+  --border: 186 85% 34%;
+  --primary: 52 100% 55%;
+  --primary-foreground: 230 45% 8%;
+  --accent: 186 90% 40%;
+}
+html.dark[data-ui-style="cyberpunk"] {
+  --background: 232 50% 5%;
+}
+html[data-ui-style="cyberpunk"] .glass-surface {
+  border-left: 3px solid hsl(var(--primary)) !important;
+  border-radius: 0.35rem !important;
+}
+/* Clipped corners + scanline sheen */
+html[data-ui-style="cyberpunk"] img.rounded-md,
+html[data-ui-style="cyberpunk"] img.rounded-2xl {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  border-radius: 0 !important;
+}
+html[data-ui-style="cyberpunk"] h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-shadow: 1px 0 hsl(var(--primary) / 0.6), -1px 0 hsl(190 100% 50% / 0.4);
+}
+html[data-ui-style="cyberpunk"] button {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  border-radius: 0 !important;
+}
+html[data-ui-style="cyberpunk"] .bg-secondary {
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.12), transparent) !important;
+  border-left: 2px solid hsl(var(--primary) / 0.7);
+}
+html[data-ui-style="cyberpunk"] .player-bar {
+  border-left: 3px solid hsl(var(--primary)) !important;
+  box-shadow: -4px 0 20px hsl(var(--primary) / 0.3) !important;
+}
+
+/* ---------- Minimal Mono style: flat grayscale, no accent glow ---------- */
+html[data-ui-style="mono"] {
+  --background: 0 0% 98%;
+  --foreground: 0 0% 9%;
+  --card: 0 0% 100%;
+  --secondary: 0 0% 94%;
+  --secondary-foreground: 0 0% 12%;
+  --muted: 0 0% 92%;
+  --muted-foreground: 0 0% 42%;
+  --border: 0 0% 85%;
+  --primary: 0 0% 12%;
+  --primary-foreground: 0 0% 98%;
+  --accent: 0 0% 90%;
+}
+html.dark[data-ui-style="mono"] {
+  --background: 0 0% 7%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 11%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 0 0% 18%;
+  --muted-foreground: 0 0% 62%;
+  --border: 0 0% 25%;
+  --primary: 0 0% 94%;
+  --primary-foreground: 0 0% 9%;
+}
+
+html[data-ui-style="mono"] .glass-surface {
+  box-shadow: none !important;
+  border: 1px solid hsl(var(--border)) !important;
+  backdrop-filter: none !important;
+}
+html[data-ui-style="mono"] img {
+  filter: grayscale(1) contrast(1.05);
+  transition: filter .45s ease;
+}
+/* Colour returns on hover - a common editorial/mono pattern */
+html[data-ui-style="mono"] img:hover,
+html[data-ui-style="mono"] .cursor-pointer:hover img {
+  filter: grayscale(0) contrast(1);
+}
+html[data-ui-style="mono"] {
+  --radius: 0.3rem;
+}
+html[data-ui-style="mono"] .rounded-2xl,
+html[data-ui-style="mono"] .rounded-xl,
+html[data-ui-style="mono"] .rounded-md {
+  border-radius: 0.3rem !important;
+}
+html[data-ui-style="mono"] h1,
+html[data-ui-style="mono"] h2 {
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+html[data-ui-style="mono"] .bg-secondary {
+  background: hsl(var(--foreground) / 0.05) !important;
+}
+html[data-ui-style="mono"] button {
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: none !important;
+}
+
+
+/* ===================== Per-style typography & finishing ===================== */
+
+/* Retro: slab-ish, letterpressed headings on warm paper */
+html[data-ui-style="retro"] body {
+  font-family: "Courier New", ui-monospace, monospace;
+}
+html[data-ui-style="retro"] h1,
+html[data-ui-style="retro"] h2 {
+  font-weight: 700;
+  text-shadow: 2px 2px 0 hsl(var(--primary) / 0.25);
+}
+html[data-ui-style="retro"] img {
+  filter: saturate(0.85) sepia(0.15);
+}
+
+/* Cyberpunk: monospace UI, glowing rails */
+html[data-ui-style="cyberpunk"] body {
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, monospace;
+}
+html[data-ui-style="cyberpunk"] .bg-secondary,
+html[data-ui-style="cyberpunk"] .glass-surface {
+  box-shadow: inset 0 0 0 1px hsl(var(--accent) / 0.35);
+}
+html[data-ui-style="cyberpunk"] img {
+  filter: saturate(1.25) contrast(1.1);
+}
+html[data-ui-style="cyberpunk"] .text-muted-foreground {
+  color: hsl(var(--accent)) !important;
+}
+
+/* Neon: glow that follows the accent colour */
+html[data-ui-style="neon"] body {
+  background-image:
+    radial-gradient(60rem 40rem at 15% -10%, hsl(var(--primary) / 0.18), transparent 60%),
+    radial-gradient(45rem 35rem at 95% 10%, hsl(186 90% 50% / 0.12), transparent 60%);
+  background-attachment: fixed;
+}
+html[data-ui-style="neon"] img {
+  filter: saturate(1.2);
+}
+
+/* Pastel: rounded, gentle, soft-focus artwork */
+html[data-ui-style="pastel"] body {
+  background-image:
+    radial-gradient(50rem 30rem at 10% -5%, hsl(var(--primary) / 0.12), transparent 65%),
+    radial-gradient(40rem 28rem at 90% 0%, hsl(190 70% 75% / 0.16), transparent 65%);
+  background-attachment: fixed;
+}
+html[data-ui-style="pastel"] h1,
+html[data-ui-style="pastel"] h2 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+html[data-ui-style="pastel"] img {
+  filter: saturate(0.95) brightness(1.02);
+}
+
+/* Mono: editorial spacing, no colour anywhere */
+html[data-ui-style="mono"] body {
+  font-family: ui-sans-serif, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+html[data-ui-style="mono"] .text-xs,
+html[data-ui-style="mono"] .text-sm {
+  letter-spacing: 0.005em;
+}
+
+/* Flat 2D: crisp, no depth, slightly tighter type */
+html[data-ui-style="flat"] h1,
+html[data-ui-style="flat"] h2 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+html[data-ui-style="flat"] .bg-secondary\/60,
+html[data-ui-style="flat"] .bg-secondary\/50 {
+  background: hsl(var(--foreground) / 0.06) !important;
+}
+
+/* Every style transitions smoothly when switched */
+html[data-ui-style] body {
+  transition: background-color .45s ease, color .45s ease;
+}
+
+/* Horizontal chip/row scrollers: keep the swipe, hide the bar. */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Polish pass: focus visibility, text selection and motion safety.
+   --------------------------------------------------------------------------- */
+
+/* Keyboard focus was invisible on most controls because the default outline is
+   removed by the reset. This restores a consistent, theme-aware ring. */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: hsl(var(--primary) / 0.25);
+}
+
+/* Long titles must never blow out a flex row. */
+.truncate-safe {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Respect users who ask for less motion (also stops the hover zoom on cards
+   from triggering motion sickness). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Images fade in once decoded instead of snapping in row by row. */
+img {
+  transition: opacity 0.25s ease;
+}
